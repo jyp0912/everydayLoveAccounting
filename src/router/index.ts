@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import Labels from '@/views/labels.vue'
 import Money from  '@/views/money.vue'
 import Statistics from '@/views/statistics.vue'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter);
 
@@ -24,6 +24,10 @@ const routes = [
         path: '/statistics',
         component: Statistics
     },
+    {
+        path: '/*',
+        component: NotFound
+    },
     // {
     // path: '/about',
     // name: 'About',
@@ -32,10 +36,10 @@ const routes = [
     //     // which is lazy-loaded when the route is visited.
     //     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
     // }
-]
+];
 
 const router = new VueRouter({
     routes
-})
+});
 
 export default router
