@@ -23,8 +23,8 @@ export default class Type extends Vue{
            this.selectedTags.splice(index,1)
        } else {
            this.selectedTags.push(tag);
-           console.log(tag)
        }
+       this.$emit('update:value',this.selectedTags);
    }
    create(){
        const name = window.prompt('请输入标签名')

@@ -8,18 +8,24 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
-  import {Component} from "vue-property-decorator";
-  @Component
-  export default class Type extends Vue{
-      type = '-';
-      selectType(type: string){
-          if (type!== '-' && type !== '+'){
-              throw new Error('type is unknown')
-          }
-          this.type = type
-      }
-  }
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
+
+    @Component
+    export default class Type extends Vue {
+        @Prop() readonly value!: string;
+        type = '-';
+
+        selectType(type: string) {
+            if (type !== '-' && type !== '+') {
+                throw new Error('type is unknown');
+            }
+            this.type = type;
+            this.$emit('update:value', type);
+        }
+
+
+    }
     // export default {
     //     name: 'Types',
     //     data(){
@@ -44,6 +50,7 @@
     display: flex;
     text-align: center;
     font-size: 24px;
+
     > li {
       width: 50%;
       height: 64px;
@@ -51,6 +58,7 @@
       justify-content: center;
       align-items: center;
       position: relative;
+
       &.selected::after {
         content: '';
         position: absolute;
