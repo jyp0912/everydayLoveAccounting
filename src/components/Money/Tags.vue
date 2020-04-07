@@ -3,7 +3,7 @@
     <div class="new">
       <button @click="create">新增标签</button>
     </div>
-    <ul class="current" >
+    <ul class="current">
       <li v-for="tag in dataSource" :key="tag" :class="{selected: selectedTags.indexOf(tag)>=0}" @click="toggle(tag)">{{tag}}</li>
     </ul>
   </div>
@@ -41,6 +41,7 @@ export default class Type extends Vue{
   .tags {
     font-size: 14px;
     padding: 16px;
+    background-color: #fff;
     flex-grow: 1;
     display: flex;
     flex-direction: column-reverse;

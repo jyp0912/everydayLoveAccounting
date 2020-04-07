@@ -4,8 +4,9 @@
       {{records}}
       <NumberPad @update:value="onUpdateNumber" @submit="saveRecord"/>
       <Types value="record.type" @update:value="onUpdateType"/>
-      <Notes @update:value="onUpdateNotes"/>
-      <Tags :data-source.sync="tags" @update:value="onUpdateTags"/>
+      <div class="notes">
+        <FormItem name="备注" placeholder="请在这里输入备注" @update:value="onUpdateNotes"/>
+      </div>      <Tags :data-source.sync="tags" @update:value="onUpdateTags"/>
     </Layout>
   </div>
 </template>
@@ -15,7 +16,7 @@
 
     import NumberPad from '@/components/Money/NumberPad.vue';
     import Types from '@/components/Money/Types.vue';
-    import Notes from '@/components/Money/Notes.vue';
+    import FormItem from '@/components/Money/FormItem.vue';
     import Tags from '@/components/Money/Tags.vue';
     import {Component, Watch} from 'vue-property-decorator';
     import recordsModel  from '@/assets/models/recordsModel';
@@ -24,7 +25,7 @@
     const records = recordsModel.fetch();
     const tags = tagsModel.fetch();
     @Component(
-        {components: {Tags, Notes, Types, NumberPad}}
+        {components: {FormItem, Tags, Types, NumberPad}}
     )
 
     export default class Money extends Vue {
@@ -73,5 +74,8 @@
   .layout-content {
     display: flex;
     flex-direction: column-reverse;
+  }
+  .notes{
+    padding: 12px 0;
   }
 </style>
