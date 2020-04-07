@@ -18,16 +18,18 @@
     import Notes from '@/components/Money/Notes.vue';
     import Tags from '@/components/Money/Tags.vue';
     import {Component, Watch} from 'vue-property-decorator';
-    import model  from '@/model';
+    import recordsModel  from '@/assets/models/recordsModel';
+    import tagsModel from '@/assets/models/tagsModel';
 
-const records = model.fetch();
+    const records = recordsModel.fetch();
+    const tags = tagsModel.fetch();
     @Component(
         {components: {Tags, Notes, Types, NumberPad}}
     )
 
     export default class Money extends Vue {
-        tags = ['衣', '食', '住', '行'];
-        records: RecordItem[] = JSON.parse(window.localStorage.getItem('records') || '[]');
+        tags = tags;
+        records: RecordItem[] = records;
         record: RecordItem = {
             tags: [],
             notes: '',
@@ -52,7 +54,7 @@ const records = model.fetch();
         }
 
         saveRecord() {
-            const record2: RecordItem = model.clone(this.record);//深拷贝以免覆盖数据
+            const record2: RecordItem = recordsModel.clone(this.record);//深拷贝以免覆盖数据
             record2.createAt = new Date();
             this.records.push(record2);
             console.log(this.records);
@@ -60,7 +62,7 @@ const records = model.fetch();
 
         @Watch('records')
         onRecordsChange() {
-          model.save(this.records)
+          recordsModel.save(this.records)
         }
 
 
