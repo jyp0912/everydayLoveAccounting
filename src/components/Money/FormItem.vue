@@ -15,7 +15,6 @@
       @Prop({default:''}) value!: string;
       @Prop({required:true}) name!: string;
       @Prop() placeholder?: string;
-      @Watch('value')
         onValueChanged(value: string){
           this.$emit('update:value',value)
       }
@@ -24,7 +23,7 @@
 
 <style lang="scss" scoped>
   .formItem {
-    font-size: 14px;
+    font-size: 16px;
     padding-left: 16px;
     display: flex;
     align-items: center;
