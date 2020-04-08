@@ -55,10 +55,7 @@
         }
 
         saveRecord() {
-            const record2: RecordItem = recordsModel.clone(this.record);//深拷贝以免覆盖数据
-            record2.createAt = new Date();
-            this.records.push(record2);
-            console.log(this.records);
+            recordsModel.create(this.record)
         }
 
         @Watch('records')
