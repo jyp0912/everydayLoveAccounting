@@ -17,7 +17,7 @@
     import FormItem from '@/components/Money/FormItem.vue';
     import Tags from '@/components/Money/Tags.vue';
     import {Component} from 'vue-property-decorator';
-    import Tabs from '@/views/Tabs.vue';
+    import Tabs from '@/components/Tabs.vue';
     import recordTypeList from '@/constant/recordTypeList';
 
     @Component(
