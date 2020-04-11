@@ -1,10 +1,9 @@
 <template>
   <Layout>
     <Tabs class-prefix="type" :data-source="recordTypeList" :value.sync="type"/>
-    <Tabs class-prefix="interval" :data-source="intervalList" :value.sync="interval"/>
-    <ol>
+    <ol v-if="groupList.length>0">
       <li v-for="(group,index) in groupList" :key="index">
-        <h3 class="title">{{beautify(group.title)}}</h3>
+        <h3 class="title">{{beautify(group.title)}}  <span>{{group.total}}</span></h3>
         <ol>
           <li v-for="item in group.items" :key="item.id"
               class="record"
@@ -16,6 +15,9 @@
         </ol>
       </li>
     </ol>
+    <div v-else class="noRecords">
+      目前没有相关记录
+    </div>
   </Layout>
 </template>
 <style scoped lang="scss">
@@ -26,17 +28,37 @@
     justify-content: space-between;
     align-content: center;
   }
+
   .title {
     @extend %item;
   }
+
   .record {
     background: white;
     @extend %item;
   }
+
   .notes {
     margin-right: auto;
     margin-left: 16px;
     color: #999;
+  }
+  .noRecords {
+    margin: 20px;
+    text-align: center;
+  }
+  ::v-deep {
+    .type-tabs-item {
+      background: #C4C4C4;
+
+      &.selected {
+        background: white;
+
+        &::after {
+          display: none;
+        }
+      }
+    }
   }
 </style>
 
@@ -54,21 +76,22 @@
     })
     export default class Statistics extends Vue {
         tagString(tags: Tag[]) {
-            return tags.length === 0 ? '无' : tags.join(',');
+            return tags.length === 0 ? '无' : tags.map(t=>t.name).join('，');
         }
-        beautify(string: string){
+
+        beautify(string: string) {
             const day = dayjs(string);
             const now = dayjs();
-            if(day.isSame(now,'day')){
-                return '今天'
-            }else if(day.isSame(now.subtract(1,'day'),'day')){
-                return '昨天'
-            }else if (day.isSame(now.subtract(2,'day'),'day')){
-                return '前天'
-            }else if(day.isSame(now,'year')){
-                return  day.format('M月DD日');
-            }else {
-                return day.format('YYYY年MM月DD日')
+            if (day.isSame(now, 'day')) {
+                return '今天';
+            } else if (day.isSame(now.subtract(1, 'day'), 'day')) {
+                return '昨天';
+            } else if (day.isSame(now.subtract(2, 'day'), 'day')) {
+                return '前天';
+            } else if (day.isSame(now, 'year')) {
+                return day.format('M月DD日');
+            } else {
+                return day.format('YYYY年MM月DD日');
             }
         }
 
@@ -84,17 +107,30 @@
             //     console.log(hashTable[date].items);
             //     hashTable[date].items.push(recordList[i]);
             // }
-            const newList = clone(recordList).sort(((a, b) => dayjs(b.createAt).valueOf()-dayjs(a.createAt).valueOf()));
-            const result = [{title:dayjs(newList[0].createAt).format('YYYY-MM-DD'),items:[newList[0]]}]
-            for (let i =1 ;i<newList.length;i++){
+            type Result = {
+                title: string;
+                total?: number;
+                items: RecordItem[];
+            }[]
+
+            const newList = clone(recordList).filter(r => r.type === this.type).sort(((a, b) => dayjs(b.createAt).valueOf() - dayjs(a.createAt).valueOf()));
+            if (newList.length===0){
+                return [] as Result;
+            }
+            const result: Result = [{title: dayjs(newList[0].createAt).format('YYYY-MM-DD'), items: [newList[0]]}];
+
+            for (let i = 1; i < newList.length; i++) {
                 const current = newList[i];
-                const last = result[result.length-1];
-                if(dayjs(last.title).isSame(dayjs(current.createAt),'day')){
-                    last.items.push(current)
-                }else {
-                    result.push({title:dayjs(current.createAt).format('YYYY-MM-DD'),items:[current]})
+                const last = result[result.length - 1];
+                if (dayjs(last.title).isSame(dayjs(current.createAt), 'day')) {
+                    last.items.push(current);
+                } else {
+                    result.push({title: dayjs(current.createAt).format('YYYY-MM-DD'), items: [current]});
                 }
             }
+            result.map(group => {
+                group.total = group.items.reduce((sum, item) => sum + item.amount, 0);
+            });
             return result;
         }
 
@@ -109,20 +145,4 @@
     }
 </script>
 
-<style scoped lang="scss">
-  ::v-deep {
-    .type-tabs-item {
-      background: white;
-      &.selected {
-        background: #C4C4C4;
-        &::after {
-          display: none;
-        }
-      }
-    }
-    .interval-tabs-item {
-      height: 48px;
-    }
-  }
-</style>
 
